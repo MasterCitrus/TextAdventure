@@ -12,6 +12,6 @@ public:
 	void Description() const;
 private:
 	String _description;
-	Item* item;
+	Item* _item;
 };
 

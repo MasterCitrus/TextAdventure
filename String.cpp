@@ -20,23 +20,23 @@ String::String(const char* str) {
 	else {
 		_str = new char[length + 1];
 
-		strncpy(_str, str, length);
+		strcpy(_str, str);
 
-		_str[length] = '\0';
+		//_str[length] = '\0';
 	}
 }
 
 //Copy constructor.
 String::String(const String& other) : _str{nullptr} {
 	if (this == &other) return;
+	size_t length = other.Length();
+	_str = new char[length + 1];
 
-	_str = new char[other.Length() + 1];
-
-	for (int i = 0; i < other.Length(); i++) {
+	for (int i = 0; i < length; i++) {
 		_str[i] = other._str[i];
 	}
 
-	_str[String::Length()] = '\0';
+	_str[length] = '\0';
 }
 
 //Move constructor.
@@ -46,7 +46,7 @@ String::String(String&& other) noexcept : _str(nullptr) {
 }
 
 //Wacky constructor???
-String::String(AdoptPointer, char* str) : _str{str} {
+String::String(AdoptPointer, char* str) : _str{ str } {
 
 }
 

@@ -13,9 +13,9 @@ public:
 
 	void MakeRooms();
 
-	//Item MakeItem();
+	Item* MakeItem();
 private:
-	Room rooms[MAP_HEIGHT][MAP_WIDTH];
+	Room* rooms[MAP_HEIGHT][MAP_WIDTH];
 	Player* _player;
 };
 

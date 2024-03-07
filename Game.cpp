@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "String.h"
 
 Game::Game() {
 	MakeRooms();
@@ -19,15 +20,15 @@ void Game::Run() {
 	while (true) {
 		system("cls");
 		std::cout << "\t\tPOS: " << playerPosX << " , " << playerPosY << "\n";
-		rooms[playerPosY][playerPosX].Description();
+		rooms[playerPosY][playerPosX]->Description();
 		String input;
 		std::cout << "\n\n\t\t>> ";
 		input.ReadFromConsole();
 
-		if (input == "move north" && playerPosY < MAP_HEIGHT - 1) playerPosY++;
-		else if (input == "move south" && playerPosY > 0) playerPosY--;
-		else if (input == "move east" && playerPosX > 0) playerPosX--;
-		else if (input == "move west" && playerPosX < MAP_WIDTH - 1) playerPosX++;
+		if (input == "move north" && playerPosY > 0 ) playerPosY--;
+		else if (input == "move south" && playerPosY < MAP_HEIGHT - 1) playerPosY++;
+		else if (input == "move east" && playerPosX < MAP_WIDTH - 1) playerPosX++;
+		else if (input == "move west" && playerPosX > 0 ) playerPosX--;
 		else if (input == "quit") break;
 		else std::cout << std::endl << "\t\tInvalid Command!";
 
@@ -36,21 +37,22 @@ void Game::Run() {
 		std::cin.clear();
 		std::cin.ignore(std::cin.rdbuf()->in_avail());
 		std::cin.get();
+
 	}
 }
 
 void Game::MakeRooms() {
-	std::cout << "Generating rooms...";
-	Room entry = Room("\t\tYou are at the dungeon entrance.", nullptr);
-	Room empty = Room("\t\tYou are in a very bare room.", nullptr);
 	for (int y = 0; y < MAP_HEIGHT; y++) {
-		for (int x = 0; x < MAP_HEIGHT; x++) {
-			rooms[y][x] = empty;
+		for (int x = 0; x < MAP_WIDTH; x++) {
+			rooms[y][x] = new Room("You are in a very bare room.", nullptr);
 		}
 	}
-	rooms[2][2] = entry;
+	rooms[2][2] = new Room("You are at the dungeon entrance.", nullptr);
 }
 
-//Item Game::MakeItem() {
-//	return nullptr;
-//}
+Item* Game::MakeItem() {
+	srand(time(nullptr));
+
+	
+	return nullptr;
+}
