@@ -2,6 +2,8 @@
 #include "Spell.h"
 #include "String.h"
 
+#include <map>
+
 class Player
 {
 public:
@@ -10,6 +12,6 @@ public:
 
 	bool FindSpell(String spell);
 private:
-
+	std::map<String, Spell> spellList;
 };
 

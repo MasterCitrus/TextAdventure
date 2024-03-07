@@ -5,7 +5,10 @@ class Item
 {
 public:
 	Item();
-	~Item();
+	virtual ~Item();
+
+	virtual void Description() const;
+	virtual void Use();
 private:
 
 };

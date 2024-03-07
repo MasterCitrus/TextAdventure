@@ -1,4 +1,5 @@
 #pragma once
+#include "Constants.h"
 #include "Player.h"
 #include "Room.h"
 
@@ -9,7 +10,12 @@ public:
 	~Game();
 
 	void Run();
-private:
 
+	void MakeRooms();
+
+	//Item MakeItem();
+private:
+	Room rooms[MAP_HEIGHT][MAP_WIDTH];
+	Player* _player;
 };
 

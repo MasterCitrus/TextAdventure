@@ -4,7 +4,7 @@
 class Spell
 {
 public:
-	Spell();
+	Spell(String name, int damage);
 	~Spell();
 
 	static bool Compare(Spell a, Spell b);
