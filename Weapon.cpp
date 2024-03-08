@@ -2,10 +2,11 @@
 
 Weapon::Weapon() {}
 
-Weapon::Weapon(String name, String description) : Item(name, description) {}
+Weapon::Weapon(String name, String description, bool canUse) : Item(name, description), _canUse{canUse} {}
 
 Weapon::~Weapon() {}
 
 void Weapon::Use() {
-	std::cout << "\n\t\tThe weapon rejects you! You are not worthy.\n";
+	if (_canUse) std::cout << "\n\t\tThe weapon accepts you.\n";
+	else std::cout << "\n\t\tThe weapon rejects you! You are not worthy.\n";
 }

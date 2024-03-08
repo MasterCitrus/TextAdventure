@@ -1,6 +1,8 @@
-#include "Game.h"
+#include "Animal.h"
 #include "Consumable.h"
+#include "Game.h"
 #include "String.h"
+#include "Weapon.h"
 
 #include <random>
 
@@ -126,26 +128,87 @@ Item* Game::MakeItem() {
 	Item* item{};
 	std::random_device rand;
 	std::mt19937 generator(rand());
-	std::uniform_int_distribution<int> distr(1, 2);
-	int r = distr(generator);
+	std::uniform_int_distribution<int> getItem(1, 2);
+	std::uniform_int_distribution<int> itemType(1, 3);
+	std::uniform_int_distribution<int> consumable(1, 6);
+	std::uniform_int_distribution<int> weapon(1, 6);
+	std::uniform_int_distribution<int> animal(1, 6);
+	int r = getItem(generator);
 	if (r == 1) {
-		std::random_device rand;
-		std::mt19937 generator(rand());
-		std::uniform_int_distribution<int> distr(1, 6);
-		int b = distr(generator);
-		switch (b) {
+		r = itemType(generator);
+		switch (r) {
 		case 0:
-			
+			//Consumables
+			r = consumable(generator);
+			switch (r) {
+			case 0:
+				item = new Consumable("Poison", "This is poison.", 1);
+				break;
+			case 1:
+				item = new Consumable("Mana Potion", "This is a mana potion.", 3);
+				break;
+			case 2:
+				item = new Consumable("Lockpick", "This is a lockpick.", 3);
+				break;
+			case 3:
+				item = new Consumable("Water Bottle", "This is a water bottle.", 5);
+				break;
+			case 4:
+				item = new Consumable("Box of Rations", "This is a box of rations.", 3);
+				break;
+			case 5:
+				item = new Consumable("Health Potion", "This is a health potion.", 3);
+				break;
+			}
+			break;
 		case 1:
-			
+			//Animals
+			r = animal(generator);
+			switch (r) {
+			case 0:
+				item = new Animal("Bird", "This is a bird.", "The bird flaps it's wings.");
+				break;
+			case 1:
+				item = new Animal("Rat", "This is a rat.", "The rat scurries around.");
+				break;
+			case 2:
+				item = new Animal("Mouse", "This is a mouse.", "The mouse squeaks.");
+				break;
+			case 3:
+				item = new Animal("Snake", "This is a snake.", "The snake slithers about.");
+				break;
+			case 4:
+				item = new Animal("Skeleton", "This is a skeleton.", "The skeleton rattles.");
+				break;
+			case 5:
+				item = new Animal("Lizard", "This is a lizard.", "The lizard scurries around.");
+				break;
+			}
+			break;
 		case 2:
-			
-		case 3:
-			
-		case 4:
-			
-		case 5:
-			item = new Consumable("Health Potion", "This is a health potion.", 3);
+			//Weapons
+			r = weapon(generator);
+			switch (r) {
+			case 0:
+				item = new Weapon("Lightsaber", "An elegant weapon for a more civilised age.", false);
+				break;
+			case 1:
+				item = new Weapon("Axe", "This is an axe.", true);
+				break;
+			case 2:
+				item = new Weapon("Sword", "This is a sword.", true);
+				break;
+			case 3:
+				item = new Weapon("Spear", "This is a spear.", true);
+				break;
+			case 4:
+				item = new Weapon("Bow", "This is a bow.", true);
+				break;
+			case 5:
+				item = new Weapon("Yamato", "You feel an aura of pure motivation.", false);
+				break;
+			}
+			break;
 		}
 		return item;
 	}
