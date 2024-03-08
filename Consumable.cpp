@@ -9,10 +9,10 @@ Consumable::~Consumable() {}
 void Consumable::Use() {
 	if (_uses > 0) {
 		_uses--;
-		std::cout << "\t\tYou have used the " << _name << ". It has " << _uses << " uses left." << std::endl;
+		std::cout << "\n\t\tYou have used the " << _name << ". It has " << _uses << " uses left." << std::endl;
 		if (_uses == 0) _description = ((&_name.ToLower().CharacterAt(0) != "a" || "e" || "i" || "o" || "u") ? (String)"This is a " : (String)"This is an ") + _name + (String)". It is empty.";
 	}
 	else {
-		std::cout << "\t\tIt cannot be used anymore.\n";
+		std::cout << "\n\t\tIt cannot be used anymore.\n";
 	}
 }

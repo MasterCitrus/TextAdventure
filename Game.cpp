@@ -12,7 +12,7 @@ Game::~Game() {}
 
 void Game::Run() {
 	String commands[] = {
-		"move north", "move south", "move east", "move west", "use ", "look", "quit"
+		"move north", "move south", "move east", "move west", "use ", "look", "quit", "help"
 	};
 	int playerPosX = 2;
 	int playerPosY = 2;
@@ -25,7 +25,7 @@ void Game::Run() {
 
 	while (true) {
 		system("cls");
-		std::cout << "\t\t"<< rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+		std::cout << "\t\t"<< rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
 		rooms[playerPosY][playerPosX]->Description();
 		DisplayValidDirections(playerPosX, playerPosY);
 		String input;
@@ -42,15 +42,34 @@ void Game::Run() {
 		else if (input == commands[1] && playerPosY < MAP_HEIGHT - 1) playerPosY++;
 		else if (input == commands[2] && playerPosX < MAP_WIDTH - 1) playerPosX++;
 		else if (input == commands[3] && playerPosX > 0) playerPosX--;
-		else if (input == commands[4] + itemName.ToLower()) rooms[playerPosY][playerPosX]->GetItem()->Use();
+		else if (input == commands[4] + itemName.ToLower()) {
+			system("cls");
+			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+			rooms[playerPosY][playerPosX]->GetItem()->Use();
+		}
 		else if (input == commands[5]) {
-			if (rooms[playerPosY][playerPosX]->GetItem() == nullptr) std::cout << "\t\tYou see nothing of value here.";
+			system("cls");
+			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+			if (rooms[playerPosY][playerPosX]->GetItem() == nullptr) std::cout << "\n\t\tYou see nothing of value here.\n";
 			else rooms[playerPosY][playerPosX]->GetItem()->Description();
 		}
 		else if (input == commands[6]) break;
-		else std::cout << std::endl << "\t\tInvalid Command!";
+		else if (input == commands[7]) {
+			system("cls");
+			std::cout << "\t\t[Valid Commands]\n\n"
+				<< "\t\tMove <direction>\n"
+				<< "\t\tLook\n"
+				<< "\t\tUse <item name>\n"
+				<< "\t\tHelp\n"
+				<< "\t\tQuit\n";
+		}
+		else {
+			system("cls");
+			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
+			std::cout << std::endl << "\t\tInvalid Command!";
+		} 
 
-		std::cout << std::endl << std::endl << "\t\tPress 'Enter' to continue.";
+		std::cout << "\n\n\t\tPress 'Enter' to continue.";
 
 		std::cin.clear();
 		std::cin.ignore(std::cin.rdbuf()->in_avail());
@@ -88,13 +107,13 @@ void Game::MakeRooms() {
 				rooms[y][x] = new Room("Hallway", "You are in a hallway.", MakeItem());
 				break;
 			case 8:
-				rooms[y][x] = new Room("Armoury", "You are in a room with racks and stands full of weapons and armor.", MakeItem());
+				rooms[y][x] = new Room("Armoury", "You are in a room with racks of old weapons and stands of old armor.", MakeItem());
 				break;
 			case 9:
-				rooms[y][x] = new Room("Tomb", "You are in a room with a large sarcohpogus in the center.", MakeItem());
+				rooms[y][x] = new Room("Tomb", "You are in a burial chamber.", MakeItem());
 				break;
 			case 10:
-				rooms[y][x] = new Room("Treasure Room", "You are in a room filled with treasure.", MakeItem());
+				rooms[y][x] = new Room("Treasure Room", "You are in a room filled with various treasure.", MakeItem());
 				break;
 			}
 			//std::cout << "\t" << r << ": " << rooms[y][x]->GetName() << " | " << ((rooms[y][x]->GetItem() != nullptr) ? rooms[y][x]->GetItem()->GetName() : "None") << std::endl;

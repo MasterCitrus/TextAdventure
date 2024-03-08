@@ -7,7 +7,7 @@ Item::Item(String name, String description) : _name{ name }, _description{ descr
 Item::~Item() {}
 
 void Item::Description() const {
-	std::cout << "\t\t" << _description << std::endl;
+	std::cout << "\n\t\t" << "[" << _name << "]" << std::endl << "\t\t" << _description << std::endl;
 }
 
 void Item::Use() {
