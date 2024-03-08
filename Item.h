@@ -5,11 +5,15 @@ class Item
 {
 public:
 	Item();
+	Item(String name, String description);
 	virtual ~Item();
 
-	virtual void Description() const;
+	void Description() const;
 	virtual void Use();
-private:
 
+	String GetName();
+protected:
+	String _description;
+	String _name;
 };
 

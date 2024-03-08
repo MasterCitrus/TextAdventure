@@ -2,14 +2,19 @@
 
 Room::Room() : _item{nullptr} {}
 
-Room::Room(String description, Item* item) : _description{ description }, _item{item} {}
+Room::Room(String name, String description, Item* item) : _name{ name }, _description { description }, _item{ item } {}
 
 Room::~Room() {}
 
 void Room::Description() const {
 	std::cout << "\t\t" << _description << std::endl;
-	if (_item == nullptr) std::cout << "\t\tYou see nothing of value here.\n";
-	else {
-		_item->Description();
-	}
+}
+
+String Room::GetName() const {
+	return _name;
+}
+
+Item* Room::GetItem() {
+	if (_item != nullptr) return _item;
+	return nullptr;
 }

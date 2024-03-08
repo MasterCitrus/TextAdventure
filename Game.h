@@ -11,6 +11,8 @@ public:
 
 	void Run();
 
+	void DisplayValidDirections(int x, int y);
+
 	void MakeRooms();
 
 	Item* MakeItem();
