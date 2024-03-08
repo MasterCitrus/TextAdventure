@@ -16,6 +16,8 @@ public:
 	void MakeRooms();
 
 	Item* MakeItem();
+
+	Spell* GenerateSpell();
 private:
 	Room* rooms[MAP_HEIGHT][MAP_WIDTH];
 	Player* _player;

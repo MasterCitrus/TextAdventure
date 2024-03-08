@@ -11,7 +11,9 @@ public:
 	~Player();
 
 	bool FindSpell(String spell);
+
+	void AddSpell(Spell* spell);
 private:
-	std::map<String, Spell> spellList;
+	std::map<String, Spell*> spellList;
 };
 

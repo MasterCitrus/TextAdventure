@@ -4,6 +4,7 @@
 class Spell
 {
 public:
+	Spell();
 	Spell(String name, int damage);
 	~Spell();
 

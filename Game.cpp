@@ -14,7 +14,7 @@ Game::~Game() {}
 
 void Game::Run() {
 	String commands[] = {
-		"move north", "move south", "move east", "move west", "use ", "look", "quit", "help"
+		"move north", "move south", "move east", "move west", "use ", "look", "quit", "help", "find spell"
 	};
 	int playerPosX = 2;
 	int playerPosY = 2;
@@ -129,10 +129,10 @@ Item* Game::MakeItem() {
 	std::random_device rand;
 	std::mt19937 generator(rand());
 	std::uniform_int_distribution<int> getItem(1, 2);
-	std::uniform_int_distribution<int> itemType(1, 3);
-	std::uniform_int_distribution<int> consumable(1, 6);
-	std::uniform_int_distribution<int> weapon(1, 6);
-	std::uniform_int_distribution<int> animal(1, 6);
+	std::uniform_int_distribution<int> itemType(0, 2);
+	std::uniform_int_distribution<int> consumable(0, 5);
+	std::uniform_int_distribution<int> weapon(0, 5);
+	std::uniform_int_distribution<int> animal(0, 5);
 	int r = getItem(generator);
 	if (r == 1) {
 		r = itemType(generator);
@@ -213,4 +213,10 @@ Item* Game::MakeItem() {
 		return item;
 	}
 	else return nullptr;
+}
+
+Spell* Game::GenerateSpell()
+{
+	Spell* spell{};
+	return nullptr;
 }
