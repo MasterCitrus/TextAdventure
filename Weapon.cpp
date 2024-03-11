@@ -1,6 +1,6 @@
 #include "Weapon.h"
 
-Weapon::Weapon() {}
+Weapon::Weapon() : _canUse{false} {}
 
 Weapon::Weapon(String name, String description, bool canUse) : Item(name, description), _canUse{canUse} {}
 

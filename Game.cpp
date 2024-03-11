@@ -1,20 +1,26 @@
 #include "Animal.h"
 #include "Consumable.h"
 #include "Game.h"
-#include "String.h"
+#include "Spell.h"
 #include "Weapon.h"
 
 #include <random>
 
 Game::Game() {
+	_player = new Player;
 	MakeRooms();
+	for (int i = 0; _player->GetSpellList().size() < INITIAL_SPELL_AMOUNT; i++) {
+		Spell* spell = GenerateSpell();
+		if (spell != nullptr) _player->AddSpell(spell);
+	}	
 }
 
 Game::~Game() {}
 
+//Handles the game.
 void Game::Run() {
 	String commands[] = {
-		"move north", "move south", "move east", "move west", "use ", "look", "quit", "help", "find spell"
+		"move north", "move south", "move east", "move west", "use ", "look", "quit", "help", "find spell", "spells", "cast"
 	};
 	int playerPosX = 2;
 	int playerPosY = 2;
@@ -27,16 +33,17 @@ void Game::Run() {
 
 	while (true) {
 		system("cls");
-		std::cout << "\t\t"<< rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
+		std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
 		rooms[playerPosY][playerPosX]->Description();
+		std::cout << "\n";
 		DisplayValidDirections(playerPosX, playerPosY);
 		String input;
 		String itemName;
 		if (rooms[playerPosY][playerPosX]->GetItem() != nullptr) itemName = rooms[playerPosY][playerPosX]->GetItem()->GetName();
 		else itemName = "";
 
-		std::cout << "\n\n\t\t>> ";
-		input.ReadFromConsole();
+		std::cout << "\n\t\t>> ";
+		input.ReadFromConsole().ToLower();
 
 		std::cout << "\n";
 
@@ -59,19 +66,44 @@ void Game::Run() {
 		else if (input == commands[7]) {
 			system("cls");
 			std::cout << "\t\t[Valid Commands]\n\n"
-				<< "\t\tMove <direction>\n"
-				<< "\t\tLook\n"
-				<< "\t\tUse <item name>\n"
-				<< "\t\tHelp\n"
-				<< "\t\tQuit\n";
+				<< "\t\tMove <direction>  | Moves towards direction.\n"
+				<< "\t\tLook              | Checks room for items.\n"
+				<< "\t\tUse <object name> | Uses named object.\n"
+				<< "\t\tHelp              | Displays commands.\n"
+				<< "\t\tQuit              | Quits game.\n";
+		}
+		else if (input == commands[8]) {
+			system("cls");
+			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+			std::cout << "\n\t\tEnter the spell you want to find.\n";
+			std::cout << "\n\n\n\t\t>> ";
+			input.ReadFromConsole().ToLower();
+			bool found = _player->FindSpell(input);
+			if (found) std::cout << "\n\n\t\tSpell was found.\n";
+			else std::cout << "\n\n\t\tYou do not know such a spell.\n";
+		}
+		else if (input == commands[9]) {
+			system("cls");
+			std::cout << "\t\t[Spell List]\n\n";
+			_player->SpellList();
+		}
+		else if (input == commands[10]) {
+			system("cls");
+			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+			std::cout << "\n\t\tEnter the spell you want to cast.\n";
+			std::cout << "\n\n\n\t\t>> ";
+			input.ReadFromConsole().ToLower();
+			Spell* spell = _player->CastSpell(input);
+			if (spell != nullptr) spell->Cast();
+			else std::cout << "\n\t\tYou don't know this spell.\n";
 		}
 		else {
 			system("cls");
 			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
-			std::cout << std::endl << "\t\tInvalid Command!";
+			std::cout << "\t\tInvalid Command!\n";
 		} 
 
-		std::cout << "\n\n\t\tPress 'Enter' to continue.";
+		std::cout << "\n\t\tPress 'Enter' to continue.";
 
 		std::cin.clear();
 		std::cin.ignore(std::cin.rdbuf()->in_avail());
@@ -88,8 +120,8 @@ void Game::DisplayValidDirections(int x, int y) {
 		<< ((x > 0) ? "west, " : "") << std::endl;
 }
 
+//Randomly places rooms.
 void Game::MakeRooms() {
-	//std::cout << "Generating rooms...\n";
 	std::random_device rand;
 	std::mt19937 generator(rand());
 	std::uniform_int_distribution<int> distr(1, 10);
@@ -118,12 +150,16 @@ void Game::MakeRooms() {
 				rooms[y][x] = new Room("Treasure Room", "You are in a room filled with various treasure.", MakeItem());
 				break;
 			}
-			//std::cout << "\t" << r << ": " << rooms[y][x]->GetName() << " | " << ((rooms[y][x]->GetItem() != nullptr) ? rooms[y][x]->GetItem()->GetName() : "None") << std::endl;
 		}
 	}
 	rooms[2][2] = new Room("Dungeon Entrance", "You are at the dungeon entrance.", nullptr);
 }
 
+
+/*Random item generator function.
+* Generates items from predetermined items of derived types.
+* 
+*/
 Item* Game::MakeItem() {
 	Item* item{};
 	std::random_device rand;
@@ -217,6 +253,28 @@ Item* Game::MakeItem() {
 
 Spell* Game::GenerateSpell()
 {
+	String spellNames[] = {
+		"Eclipse", "Eruption", "Frostbite", "Levitate", "Mirage", "Petrify", "Polymorph", "Teleport", "Thunderwave", "Vortex"
+	};
+	std::random_device rand;
+	std::mt19937 generator(rand());
+	std::uniform_int_distribution<int> spells(1, 5);
+	std::uniform_int_distribution<int> spellName(0, 9);
+	std::uniform_int_distribution<int> spellDmg(10, 200);
 	Spell* spell{};
-	return nullptr;
+	int spellN = spellName(generator);
+	int spellD = spellDmg(generator);
+	int spellC = spells(generator);
+	switch (spellC) {
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+		spell = new Spell(spellNames[spellN], spellD);
+		break;
+	case 5:
+		spell = nullptr;
+		break;
+	}
+	return spell;
 }

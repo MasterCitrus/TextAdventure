@@ -6,6 +6,15 @@ Spell::Spell(String name, int damage) : _name{ name }, _damage{damage} {}
 
 Spell::~Spell() {}
 
-static bool Compare(Spell a, Spell b) {
-	return false;
+void Spell::Cast() const {
+	std::cout << "\n\t\tYou have casted " << _name << ". It does " << _damage << " damage.\n";
+}
+
+String Spell::GetName()
+{
+	return _name;
+}
+
+bool Spell::Compare(Spell* a, Spell* b) {
+	return a->GetName() < b->GetName();
 }

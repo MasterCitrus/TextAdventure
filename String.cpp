@@ -224,7 +224,8 @@ const char* String::CStr() const {
 
 //Returns string with all characters in lower case.
 String& String::ToLower() {
-	for (int i = 0; i < this->Length(); i++) {
+	size_t length = this->Length();
+	for (int i = 0; i < length; i++) {
 		this->_str[i] = std::tolower(this->_str[i]);
 	}
 
@@ -233,7 +234,8 @@ String& String::ToLower() {
 
 //Returns string with all characters in upper case.
 String& String::ToUpper() {
-	for (int i = 0; i < this->Length(); i++) {
+	size_t length = this->Length();
+	for (int i = 0; i < length; i++) {
 		this->_str[i] = std::toupper(this->_str[i]);
 	}
 

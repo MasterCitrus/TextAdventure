@@ -2,7 +2,8 @@
 #include "Spell.h"
 #include "String.h"
 
-#include <map>
+#include <vector>
+#include <algorithm>
 
 class Player
 {
@@ -10,10 +11,16 @@ public:
 	Player();
 	~Player();
 
-	bool FindSpell(String spell);
+	bool FindSpell(String& spell);
+
+	Spell* CastSpell(String& spell);
+
+	std::vector<Spell*> GetSpellList();
+
+	void SpellList();
 
 	void AddSpell(Spell* spell);
 private:
-	std::map<String, Spell*> spellList;
+	std::vector<Spell*> spellList;
 };
 

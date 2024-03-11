@@ -8,7 +8,11 @@ public:
 	Spell(String name, int damage);
 	~Spell();
 
-	static bool Compare(Spell a, Spell b);
+	void Cast() const;
+
+	String GetName();
+
+	static bool Compare(Spell* a, Spell* b);
 private:
 	String _name;
 	int _damage;
