@@ -12,31 +12,20 @@ String::String() : _str{ nullptr } {
 //Single parameter constructor.
 String::String(const char* str) {
 	size_t length = strlen(str);
-	if (str == nullptr) {
-		_str = new char[1];
-		_str[0] = '\0';
-	}
-
-	else {
-		_str = new char[length + 1];
-
-		strcpy(_str, str);
-
-		//_str[length] = '\0';
-	}
+	_str = new char[length + 1];
+	strcpy(_str, str);
 }
 
 //Copy constructor.
-String::String(const String& other) : _str{nullptr} {
+String::String(const String& other) : _str{ nullptr } {
 	if (this == &other) return;
 	size_t length = other.Length();
+
 	_str = new char[length + 1];
 
 	for (int i = 0; i < length; i++) {
 		_str[i] = other._str[i];
 	}
-
-	_str[length] = '\0';
 }
 
 //Move constructor.
@@ -63,7 +52,7 @@ bool String::operator==(const String& other) const {
 	a = strcmp(_str, other._str);
 
 	if (a == 0) return true;
-	return false;
+	else  return false;
 }
 
 //Not equal to comparison operator != overload.
@@ -71,8 +60,8 @@ bool String::operator!=(const String& other) const {
 	int a;
 	a = strcmp(_str, other._str);
 
-	if (a == 0) return false;
-	return true;
+	if (a == -1 || a == 1) return true;
+	else return false;
 }
 
 //Less than operator < overload.
@@ -92,7 +81,7 @@ bool String::operator>(const String& other) const {
 //Copy assignment operator = overload.
 String& String::operator=(const String& str) {
 	if (this == &str) return *this;
-	
+
 	delete[] _str;
 	size_t length = str.Length();
 	_str = new char[length + 1];
@@ -114,16 +103,18 @@ String& String::operator=(String&& other) noexcept {
 
 //Member access operator [] overload.
 char& String::operator[](size_t index) {
-	if (index > this->Length()) {
-		throw std::out_of_range("Index out of range!");
+	size_t length = this->Length();
+	if (index > length) {
+		return _str[length];
 	}
 	return _str[index];
 }
 
 //Member access operator [] overload.
 const char& String::operator[](size_t index) const {
-	if (index > this->Length()) {
-		throw std::out_of_range("Index out of range!");
+	size_t length = this->Length();
+	if (index > length) {
+		return _str[length];
 	}
 	return _str[index];
 }
@@ -224,8 +215,7 @@ const char* String::CStr() const {
 
 //Returns string with all characters in lower case.
 String& String::ToLower() {
-	size_t length = this->Length();
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < this->Length(); i++) {
 		this->_str[i] = std::tolower(this->_str[i]);
 	}
 
@@ -234,8 +224,7 @@ String& String::ToLower() {
 
 //Returns string with all characters in upper case.
 String& String::ToUpper() {
-	size_t length = this->Length();
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < this->Length(); i++) {
 		this->_str[i] = std::toupper(this->_str[i]);
 	}
 
@@ -246,7 +235,7 @@ String& String::ToUpper() {
 size_t String::Find(const String& str) const {
 	size_t s1Len = this->Length();
 	size_t s2Len = str.Length();
-	
+
 	for (size_t i = 0; i < s1Len; i++) {
 		size_t j;
 		for (j = 0; j < s2Len; j++) {
