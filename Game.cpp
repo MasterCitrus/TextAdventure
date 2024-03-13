@@ -69,6 +69,9 @@ void Game::Run() {
 				<< "\t\tMove <direction>  | Moves towards direction.\n"
 				<< "\t\tLook              | Checks room for items.\n"
 				<< "\t\tUse <object name> | Uses named object.\n"
+				<< "\t\tSpells            | Displays list of known spells.\n"
+				<< "\t\tFind Spell        | Checks if spell is known.\n"
+				<< "\t\tCast              | Casts a spell.\n"
 				<< "\t\tHelp              | Displays commands.\n"
 				<< "\t\tQuit              | Quits game.\n";
 		}
@@ -113,7 +116,7 @@ void Game::Run() {
 }
 
 void Game::DisplayValidDirections(int x, int y) {
-	std::cout << "\t\tYou can go: "
+	std::cout << "\t\tYou can move: "
 		<< ((y > 0) ? "north, " : "")
 		<< ((x < MAP_WIDTH - 1) ? "east, " : "")
 		<< ((y < MAP_HEIGHT - 1) ? "south, " : "")
