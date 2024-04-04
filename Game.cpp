@@ -52,7 +52,7 @@ void Game::Run() {
 		else if (input == commands[1] && playerPosY < MAP_HEIGHT - 1) playerPosY++;
 		else if (input == commands[2] && playerPosX < MAP_WIDTH - 1) playerPosX++;
 		else if (input == commands[3] && playerPosX > 0) playerPosX--;
-		else if (input == commands[4] + itemName.ToLower()) {
+		else if (input == commands[4] + itemName.ToLower() && rooms[playerPosY][playerPosX]->GetItem() != nullptr) {
 			system("cls");
 			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
 			rooms[playerPosY][playerPosX]->GetItem()->Use();
