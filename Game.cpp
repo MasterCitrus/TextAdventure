@@ -37,6 +37,7 @@ void Game::Run() {
 		rooms[playerPosY][playerPosX]->Description();
 		std::cout << "\n";
 		DisplayValidDirections(playerPosX, playerPosY);
+		std::cout << "\t\tEnter 'help' to display avaiable commands\n";
 		String input;
 		String itemName;
 		if (rooms[playerPosY][playerPosX]->GetItem() != nullptr) itemName = rooms[playerPosY][playerPosX]->GetItem()->GetName();
@@ -125,13 +126,13 @@ void Game::DisplayValidDirections(int x, int y) {
 
 //Randomly places rooms.
 void Game::MakeRooms() {
-	std::random_device rand;
-	std::mt19937 generator(rand());
-	std::uniform_int_distribution<int> distr(1, 10);
+	//std::random_device rand;
+	std::random_device rd;
+	std::mt19937 gen(rd());
 	for (int y = 0; y < MAP_HEIGHT; y++) {
 		for (int x = 0; x < MAP_WIDTH; x++) {
-			
-			int r = distr(generator);
+			std::uniform_int_distribution<int> distr(1, 10);
+			int r = distr(gen);
 			switch (r) {
 			case 0:
 			case 1:
@@ -165,44 +166,44 @@ void Game::MakeRooms() {
 */
 Item* Game::MakeItem() {
 	Item* item{};
-	std::random_device rand;
-	std::mt19937 generator(rand());
-	std::uniform_int_distribution<int> getItem(1, 2);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> getItem(1, 5);
 	std::uniform_int_distribution<int> itemType(0, 2);
 	std::uniform_int_distribution<int> consumable(0, 5);
 	std::uniform_int_distribution<int> weapon(0, 5);
 	std::uniform_int_distribution<int> animal(0, 5);
-	int r = getItem(generator);
-	if (r == 1) {
-		r = itemType(generator);
+	int r = getItem(gen);
+	if (r <= 3) {
+		r = itemType(gen);
 		switch (r) {
 		case 0:
 			//Consumables
-			r = consumable(generator);
+			r = consumable(gen);
 			switch (r) {
 			case 0:
-				item = new Consumable("Poison", "This is poison.", 1);
+				item = new Consumable("Poison", "This is poison.", "You feel weakened.", 1);
 				break;
 			case 1:
-				item = new Consumable("Mana Potion", "This is a mana potion.", 3);
+				item = new Consumable("Mana Potion", "This is a mana potion.", "You have regained some mana.", 3);
 				break;
 			case 2:
-				item = new Consumable("Lockpick", "This is a lockpick.", 3);
+				item = new Consumable("Lockpick", "This is a lockpick.", "", 3);
 				break;
 			case 3:
-				item = new Consumable("Water Bottle", "This is a water bottle.", 5);
+				item = new Consumable("Water Bottle", "This is a water bottle.", "You feel refreshed.", 5);
 				break;
 			case 4:
-				item = new Consumable("Box of Rations", "This is a box of rations.", 3);
+				item = new Consumable("Box of Rations", "This is a box of rations.", "They tasted pretty bland.", 3);
 				break;
 			case 5:
-				item = new Consumable("Health Potion", "This is a health potion.", 3);
+				item = new Consumable("Health Potion", "This is a health potion.", "You have regained some vitality.", 3);
 				break;
 			}
 			break;
 		case 1:
 			//Animals
-			r = animal(generator);
+			r = animal(gen);
 			switch (r) {
 			case 0:
 				item = new Animal("Bird", "This is a bird.", "The bird flaps it's wings.");
@@ -226,7 +227,7 @@ Item* Game::MakeItem() {
 			break;
 		case 2:
 			//Weapons
-			r = weapon(generator);
+			r = weapon(gen);
 			switch (r) {
 			case 0:
 				item = new Weapon("Lightsaber", "An elegant weapon for a more civilised age.", false);
@@ -259,15 +260,15 @@ Spell* Game::GenerateSpell()
 	String spellNames[] = {
 		"Eclipse", "Eruption", "Frostbite", "Levitate", "Mirage", "Petrify", "Polymorph", "Teleport", "Thunderwave", "Vortex"
 	};
-	std::random_device rand;
-	std::mt19937 generator(rand());
+	std::random_device rd;
+	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> spells(1, 5);
 	std::uniform_int_distribution<int> spellName(0, 9);
 	std::uniform_int_distribution<int> spellDmg(10, 200);
 	Spell* spell{};
-	int spellN = spellName(generator);
-	int spellD = spellDmg(generator);
-	int spellC = spells(generator);
+	int spellN = spellName(gen);
+	int spellD = spellDmg(gen);
+	int spellC = spells(gen);
 	switch (spellC) {
 	case 1:
 	case 2:

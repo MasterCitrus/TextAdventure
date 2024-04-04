@@ -10,7 +10,7 @@ public:
 
 	void Description() const;
 
-	String GetName() const;
+	String GetName();
 
 	Item* GetItem();
 

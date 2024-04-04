@@ -22,10 +22,13 @@ String::String(const String& other) : _str{ nullptr } {
 	size_t length = other.Length();
 
 	_str = new char[length + 1];
+	
+	strcpy(_str, other._str);
 
-	for (int i = 0; i < length; i++) {
+	/*for (int i = 0; i < length; i++) {
 		_str[i] = other._str[i];
 	}
+	_str[length] = '\0';*/
 }
 
 //Move constructor.
