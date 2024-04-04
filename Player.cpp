@@ -48,7 +48,7 @@ std::vector<Spell*> Player::GetSpellList() {
 
 void Player::SpellList(){
 	for (int i = 0; i < spellList.size(); i++) {
-		std::cout << "\t\t" << spellList[i]->GetName() << "\n";
+		std::cout << "\t\t" << spellList[i]->GetName() << " | " << spellList[i]->GetDamage() << " damage" << "\n";
 	}
 }
 

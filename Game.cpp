@@ -11,7 +11,10 @@ Game::Game() {
 	MakeRooms();
 	for (int i = 0; _player->GetSpellList().size() < INITIAL_SPELL_AMOUNT; i++) {
 		Spell* spell = GenerateSpell();
-		if (spell != nullptr) _player->AddSpell(spell);
+		if (spell != nullptr) {
+			String checkSpell = spell->GetName();
+			if (!_player->FindSpell(checkSpell.ToLower())) _player->AddSpell(spell);
+		}
 	}	
 }
 
@@ -139,6 +142,8 @@ void Game::MakeRooms() {
 			case 2:
 			case 3:
 			case 4:
+				rooms[y][x] = new Room("Empty Room", "You are in a very bare room.", nullptr);
+				break;
 			case 5:
 			case 6:
 			case 7:
@@ -258,12 +263,14 @@ Item* Game::MakeItem() {
 Spell* Game::GenerateSpell()
 {
 	String spellNames[] = {
-		"Eclipse", "Eruption", "Frostbite", "Levitate", "Mirage", "Petrify", "Polymorph", "Teleport", "Thunderwave", "Vortex"
+		"Ascendence", "Blaze", "Combustion", "Counterspell", "Death", "Eclipse", "Eruption", "Fireball", "Frostbite",
+		"Heal", "Illusion", "Immortality", "Invigorate", "Jinx", "Kindle", "Levitate", "Mirage", "Nightmare", "Obliterate",
+		"Petrify", "Plague", "Polymorph", "Rejuvenate", "Shock", "Teleport", "Thunderwave", "Tsunami", "Vortex", "Warp"
 	};
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> spells(1, 5);
-	std::uniform_int_distribution<int> spellName(0, 9);
+	std::uniform_int_distribution<int> spellName(0, 28);
 	std::uniform_int_distribution<int> spellDmg(10, 200);
 	Spell* spell{};
 	int spellN = spellName(gen);

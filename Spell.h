@@ -12,6 +12,8 @@ public:
 
 	String GetName();
 
+	int GetDamage();
+
 	static bool Compare(Spell* a, Spell* b);
 private:
 	String _name;
