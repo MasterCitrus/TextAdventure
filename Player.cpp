@@ -15,12 +15,12 @@ bool Player::FindSpell(String& spell) {
 	int target;
 	String temp;
 	while (lower <= upper) {
-		target = lower + (upper - lower) / 2;
+		target = (upper + lower) / 2;
 		temp = spellList[target]->GetName();
 		temp.ToLower();
 		if (temp == spell) return true;
-		else if (temp < spell) lower = target + 1;
-		else upper = target;
+		if (temp < spell) lower = target + 1;
+		if (temp > spell) upper = target - 1;
 	}
 	return false;
 }
@@ -32,12 +32,12 @@ Spell* Player::CastSpell(String& spell)
 	int target;
 	String temp;
 	while (lower <= upper) {
-		target = lower + (upper - lower) / 2;
+		target = (upper + lower) / 2;
 		temp = spellList[target]->GetName();
 		temp.ToLower();
 		if (temp == spell) return spellList[target];
-		else if (temp < spell) lower = target + 1;
-		else upper = target;
+		if (temp < spell) lower = target + 1;
+		if (temp > spell) upper = target - 1;
 	}
 	return nullptr;
 }
