@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "Room.h"
 
+#include <random>
+
 class Game
 {
 public:
@@ -13,11 +15,27 @@ public:
 
 	void DisplayValidDirections(int x, int y);
 
-	void MakeRooms();
+	//void Move();
 
-	Item* MakeItem();
+	//void Look();
 
-	Spell* GenerateSpell();
+	//void Use();
+
+	//void Help();
+
+	//void FindSpell();
+
+	//void CastSpell();
+
+	//void Spells();
+
+	//void Quit();
+
+	void MakeRooms(std::mt19937& gen);
+
+	Item* MakeItem(std::mt19937 &gen);
+
+	Spell* GenerateSpell(std::mt19937& gen);
 private:
 	Room* rooms[MAP_HEIGHT][MAP_WIDTH];
 	Player* _player;

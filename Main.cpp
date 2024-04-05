@@ -11,7 +11,4 @@ int main() {
 	std::cin.clear();
 	std::cin.ignore(std::cin.rdbuf()->in_avail());
 	std::cin.get();
-
-	//Room dunEn("DunEn", "This is a dunEn", nullptr);
-	//std::cout << dunEn.GetName().CStr();
 }
