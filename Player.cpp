@@ -56,3 +56,12 @@ void Player::AddSpell(Spell* spell) {
 	spellList.push_back(spell);
 	if (spellList.size() >= 2) std::sort(spellList.begin(), spellList.end(), Spell::Compare);
 }
+
+void Player::SetPos(Vec2 pos) {
+	playerPos.x = pos.x;
+	playerPos.y = pos.y;
+}
+
+Vec2 Player::GetPos() const {
+	return playerPos;
+}

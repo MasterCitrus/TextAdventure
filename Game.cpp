@@ -1,11 +1,14 @@
 #include "Animal.h"
+#include "Constants.h"
 #include "Consumable.h"
 #include "Game.h"
 #include "Spell.h"
 #include "Weapon.h"
 
 Game::Game() {
+	_quit = false;
 	_player = new Player;
+	_player->SetPos(Vec2{ (MAP_WIDTH - 1) / 2 , (MAP_HEIGHT - 1) / 2 });
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	MakeRooms(gen);
@@ -22,8 +25,6 @@ Game::~Game() {}
 
 //Handles the game.
 void Game::Run() {
-	int playerPosX = (MAP_WIDTH - 1) / 2;
-	int playerPosY = (MAP_HEIGHT - 1) / 2;
 	std::cout << "\t\tWELCOME TO THE DUNGEON." << std::endl << std::endl;
 	std::cout << "\t\tPress 'Enter' to start.";
 
@@ -31,81 +32,84 @@ void Game::Run() {
 	std::cin.ignore(std::cin.rdbuf()->in_avail());
 	std::cin.get();
 
-	while (true) {
+	while (!_quit) {
+		Vec2 playerPos = _player->GetPos();
 		system("cls");
-		std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
-		rooms[playerPosY][playerPosX]->Description();
+		std::cout << "\t\t" << rooms[playerPos.y][playerPos.x]->GetName() << " | POS: " << playerPos.x << "," << playerPos.y << "\n\n";
+		rooms[playerPos.y][playerPos.x]->Description();
 		std::cout << "\n";
-		DisplayValidDirections(playerPosX, playerPosY);
-		std::cout << "\t\tEnter 'help' to display avaiable commands\n";
+		DisplayValidDirections(playerPos);
+		std::cout << "\t\tEnter 'help' to display available commands\n";
 		String input;
 		String itemName;
-		if (rooms[playerPosY][playerPosX]->GetItem() != nullptr) itemName = rooms[playerPosY][playerPosX]->GetItem()->GetName();
+		if (rooms[playerPos.y][playerPos.x]->GetItem() != nullptr) itemName = rooms[playerPos.y][playerPos.x]->GetItem()->GetName();
 		else itemName = "";
 
 		std::cout << "\n\t\t>> ";
-		input.ReadFromConsole().ToLower();
+		HandleInput(input.ReadFromConsole().ToLower());
 
 		std::cout << "\n";
 
-		if (input == commands[0] + " " + directions[0] && playerPosY > 0) playerPosY--;
-		else if (input == commands[0] + " " + directions[1] && playerPosY < MAP_HEIGHT - 1) playerPosY++;
-		else if (input == commands[0] + " " + directions[2] && playerPosX < MAP_WIDTH - 1) playerPosX++;
-		else if (input == commands[0] + " " + directions[3] && playerPosX > 0) playerPosX--;
-		else if (input == commands[1] + " " + itemName.ToLower() && rooms[playerPosY][playerPosX]->GetItem() != nullptr) {
-			system("cls");
-			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
-			rooms[playerPosY][playerPosX]->GetItem()->Use();
-		}
-		else if (input == commands[2]) {
-			system("cls");
-			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
-			if (rooms[playerPosY][playerPosX]->GetItem() == nullptr) std::cout << "\n\t\tYou see nothing of value here.\n";
-			else rooms[playerPosY][playerPosX]->GetItem()->Description();
-		}
-		else if (input == commands[3]) break;
-		else if (input == commands[4]) {
-			system("cls");
-			std::cout << "\t\t[Valid Commands]\n\n"
-				<< "\t\tMove <direction>  | Moves towards direction.\n"
-				<< "\t\tLook              | Checks room for items.\n"
-				<< "\t\tUse <object name> | Uses named object.\n"
-				<< "\t\tSpells            | Displays list of known spells.\n"
-				<< "\t\tFind Spell        | Checks if spell is known. Asks for spell name.\n"
-				<< "\t\tCast              | Casts a spell. Asks for spell name.\n"
-				<< "\t\tHelp              | Displays commands.\n"
-				<< "\t\tQuit              | Quits game.\n";
-		}
-		else if (input == commands[5]) {
-			system("cls");
-			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
-			std::cout << "\n\t\tEnter the spell you want to find.\n";
-			std::cout << "\n\n\n\t\t>> ";
-			input.ReadFromConsole().ToLower();
-			bool found = _player->FindSpell(input);
-			if (found) std::cout << "\n\n\t\tSpell was found.\n";
-			else std::cout << "\n\n\t\tYou do not know such a spell.\n";
-		}
-		else if (input == commands[6]) {
-			system("cls");
-			std::cout << "\t\t[Spell List]\n\n";
-			_player->SpellList();
-		}
-		else if (input == commands[7]) {
-			system("cls");
-			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
-			std::cout << "\n\t\tEnter the spell you want to cast.\n";
-			std::cout << "\n\n\n\t\t>> ";
-			input.ReadFromConsole().ToLower();
-			Spell* spell = _player->CastSpell(input);
-			if (spell != nullptr) spell->Cast();
-			else std::cout << "\n\t\tYou don't know this spell.\n";
-		}
-		else {
-			system("cls");
-			std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
-			std::cout << "\t\tInvalid Command!\n";
-		} 
+		//Old Command Handling
+
+		//if (input == commands[0] + " " + directions[0] && playerPosY > 0) playerPosY--;
+		//else if (input == commands[0] + " " + directions[1] && playerPosY < MAP_HEIGHT - 1) playerPosY++;
+		//else if (input == commands[0] + " " + directions[2] && playerPosX < MAP_WIDTH - 1) playerPosX++;
+		//else if (input == commands[0] + " " + directions[3] && playerPosX > 0) playerPosX--;
+		//else if (input == commands[1] + " " + itemName.ToLower() && rooms[playerPosY][playerPosX]->GetItem() != nullptr) {
+		//	system("cls");
+		//	std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+		//	rooms[playerPosY][playerPosX]->GetItem()->Use();
+		//}
+		//else if (input == commands[2]) {
+		//	system("cls");
+		//	std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+		//	if (rooms[playerPosY][playerPosX]->GetItem() == nullptr) std::cout << "\n\t\tYou see nothing of value here.\n";
+		//	else rooms[playerPosY][playerPosX]->GetItem()->Description();
+		//}
+		//else if (input == commands[3]) break;
+		//else if (input == commands[4]) {
+		//	system("cls");
+		//	std::cout << "\t\t[Valid Commands]\n\n"
+		//		<< "\t\tMove <direction>  | Moves towards direction.\n"
+		//		<< "\t\tLook              | Checks room for items.\n"
+		//		<< "\t\tUse <object name> | Uses named object.\n"
+		//		<< "\t\tSpells            | Displays list of known spells.\n"
+		//		<< "\t\tFind Spell        | Checks if spell is known. Asks for spell name.\n"
+		//		<< "\t\tCast              | Casts a spell. Asks for spell name.\n"
+		//		<< "\t\tHelp              | Displays commands.\n"
+		//		<< "\t\tQuit              | Quits game.\n";
+		//}
+		//else if (input == commands[5]) {
+		//	system("cls");
+		//	std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+		//	std::cout << "\n\t\tEnter the spell you want to find.\n";
+		//	std::cout << "\n\n\n\t\t>> ";
+		//	input.ReadFromConsole().ToLower();
+		//	bool found = _player->FindSpell(input);
+		//	if (found) std::cout << "\n\n\t\tSpell was found.\n";
+		//	else std::cout << "\n\n\t\tYou do not know such a spell.\n";
+		//}
+		//else if (input == commands[6]) {
+		//	system("cls");
+		//	std::cout << "\t\t[Spell List]\n\n";
+		//	_player->SpellList();
+		//}
+		//else if (input == commands[7]) {
+		//	system("cls");
+		//	std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n";
+		//	std::cout << "\n\t\tEnter the spell you want to cast.\n";
+		//	std::cout << "\n\n\n\t\t>> ";
+		//	input.ReadFromConsole().ToLower();
+		//	Spell* spell = _player->CastSpell(input);
+		//	if (spell != nullptr) spell->Cast();
+		//	else std::cout << "\n\t\tYou don't know this spell.\n";
+		//}
+		//else {
+		//	system("cls");
+		//	std::cout << "\t\t" << rooms[playerPosY][playerPosX]->GetName() << " | POS: " << playerPosX << "," << playerPosY << "\n\n";
+		//	std::cout << "\t\tInvalid Command!\n";
+		//} 
 
 		std::cout << "\n\t\tPress 'Enter' to continue.";
 
@@ -116,45 +120,121 @@ void Game::Run() {
 	}
 }
 
-void Game::DisplayValidDirections(int x, int y) {
-	std::cout << "\t\tYou can move: "
-		<< ((y > 0) ? "north, " : "")
-		<< ((x < MAP_WIDTH - 1) ? "east, " : "")
-		<< ((y < MAP_HEIGHT - 1) ? "south, " : "")
-		<< ((x > 0) ? "west, " : "") << std::endl;
+void Game::HandleInput(String input) {
+	Vec2 pos = _player->GetPos();
+	//Move
+	if (input.Find(commands[0]) != -1) {
+		if (input.Find(directions[0]) != -1) Move(directions[0], pos);
+		else if (input.Find(directions[1]) != -1) Move(directions[1], pos);
+		else if (input.Find(directions[2]) != -1) Move(directions[2], pos);
+		else if (input.Find(directions[3]) != -1) Move(directions[3], pos);
+		else Invalid(pos);
+	}
+	//Use
+	else if (input.Find(commands[1]) != -1) {
+		String itemName = input.GetPartialString(" ");
+		if (itemName == input) Invalid(pos);
+		else Use(itemName, pos);
+
+	}
+	//Look
+	else if (input.Find(commands[2]) != -1) Look(pos);
+	//Quit
+	else if (input.Find(commands[3]) != -1) Quit();
+	//Help
+	else if (input.Find(commands[4]) != -1) Help();
+	//Find Spell
+	else if (input.Find(commands[5]) != -1) {
+		String spellName = input.GetPartialString(" ", input.Find(commands[5]));
+		if (spellName == input) Invalid(pos);
+		else FindSpell(spellName);
+	}
+	//Spells
+	else if (input.Find(commands[6]) != -1) Spells();
+	//Cast Spell
+	else if (input.Find(commands[7]) != -1) {
+		String spellName = input.GetPartialString(" ");
+		if (spellName == input) Invalid(pos);
+		else CastSpell(spellName);
+	}
+	//Invalid
+	else Invalid(pos);
 }
 
-//void Game::Move() {
-//
-//}
-//
-//void Game::Look() {
-//
-//}
-//
-//void Game::Use() {
-//
-//}
-//
-//void Game::Help() {
-//
-//}
-//
-//void Game::FindSpell() {
-//
-//}
-//
-//void Game::CastSpell() {
-//
-//}
-//
-//void Game::Spells() {
-//
-//}
-//
-//void Game::Quit() {
-//
-//}
+void Game::DisplayValidDirections(Vec2 pos) {
+	std::cout << "\t\tYou can move: "
+		<< ((pos.y > 0) ? "north, " : "")
+		<< ((pos.x < MAP_WIDTH - 1) ? "east, " : "")
+		<< ((pos.y < MAP_HEIGHT - 1) ? "south, " : "")
+		<< ((pos.x > 0) ? "west, " : "") << std::endl;
+}
+
+void Game::Move(String direction, Vec2 pos) {
+	if (direction == directions[0] && pos.y > 0) _player->SetPos(Vec2{ pos.x , pos.y - 1 });
+	else if (direction == directions[1] && pos.y < MAP_HEIGHT - 1) _player->SetPos(Vec2{ pos.x , pos.y + 1 });
+	else if (direction == directions[2] && pos.x < MAP_WIDTH - 1) _player->SetPos(Vec2{ pos.x + 1 , pos.y });
+	else if (direction == directions[3] && pos.x > 0) _player->SetPos(Vec2{ pos.x - 1 , pos.y });
+}
+
+void Game::Look(Vec2 pos) {
+	system("cls");
+	std::cout << "\t\t" << rooms[pos.y][pos.x]->GetName() << " | POS: " << pos.x << "," << pos.y << "\n";
+	if (rooms[pos.y][pos.x]->GetItem() == nullptr) std::cout << "\n\t\tYou see nothing of value here.\n";
+	else rooms[pos.y][pos.x]->GetItem()->Description();
+}
+
+void Game::Use(String item, Vec2 pos) {
+	Item* roomItem = rooms[pos.y][pos.x]->GetItem();
+	if (roomItem != nullptr) {
+		String itemName = roomItem->GetName();
+		if (itemName.ToLower() == item) {
+			roomItem->Use();
+		}
+		else std::cout << "\n\t\tNo such item here.\n";
+	}
+	else std::cout << "\n\t\tThere is no item here.\n";
+}
+
+void Game::Help() {
+	system("cls");
+	std::cout << "\t\t[Valid Commands]\n\n"
+		<< "\t\tMove <direction>  | Moves towards direction.\n"
+		<< "\t\tLook              | Checks room for items.\n"
+		<< "\t\tUse <object name> | Uses named object.\n"
+		<< "\t\tSpells            | Displays list of known spells.\n"
+		<< "\t\tFind Spell        | Checks if spell is known. Asks for spell name.\n"
+		<< "\t\tCast              | Casts a spell. Asks for spell name.\n"
+		<< "\t\tHelp              | Displays commands.\n"
+		<< "\t\tQuit              | Quits game.\n";
+}
+
+void Game::FindSpell(String spell) {
+	bool found = _player->FindSpell(spell);
+	if (found) std::cout << "\n\n\t\tYou know this spell.\n";
+	else std::cout << "\n\n\t\tYou do not know such a spell.\n";
+}
+
+void Game::CastSpell(String spellName) {
+	Spell* spell = _player->CastSpell(spellName);
+	if (spell != nullptr) spell->Cast();
+	else std::cout << "\n\t\tYou can't cast a spell you don't know.\n";
+}
+
+void Game::Spells() {
+	system("cls");
+	std::cout << "\t\t[Spell List]\n\n";
+	_player->SpellList();
+}
+
+void Game::Quit() {
+	_quit = true;
+}
+
+void Game::Invalid(Vec2 pos) {
+	system("cls");
+	std::cout << "\t\t" << rooms[pos.y][pos.x]->GetName() << " | POS: " << pos.x << "," << pos.y << "\n\n";
+	std::cout << "\t\tInvalid Command!\n";
+}
 
 //Randomly places rooms.
 void Game::MakeRooms(std::mt19937& gen) {

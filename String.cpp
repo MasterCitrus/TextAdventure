@@ -333,3 +333,15 @@ String& String::Wobble() {
 
 	return *this;
 }
+
+String String::GetPartialString(String splitter, size_t index) {
+	size_t startPos = this->Find(index, splitter);
+	if (startPos != -1) {
+		char* temp = new char[this->Length() - startPos];
+		strcpy(temp, this->_str + startPos + 1);
+		String partial = temp;
+		delete[] temp;
+		return partial;
+	}
+	else return *this;
+}

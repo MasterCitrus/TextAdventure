@@ -13,23 +13,30 @@ public:
 
 	void Run();
 
-	void DisplayValidDirections(int x, int y);
+	//Sort input
+	void HandleInput(String input);
 
-	//void Move();
+	void DisplayValidDirections(Vec2 pos);
 
-	//void Look();
+	//Command functions
+	void Move(String direction, Vec2 pos);
 
-	//void Use();
+	void Look(Vec2 pos);
 
-	//void Help();
+	void Use(String item, Vec2 pos);
 
-	//void FindSpell();
+	void Help();
 
-	//void CastSpell();
+	void FindSpell(String spell);
 
-	//void Spells();
+	void CastSpell(String spell);
 
-	//void Quit();
+	void Spells();
+
+	void Quit();
+
+	void Invalid(Vec2 pos);
+	//Command functions
 
 	void MakeRooms(std::mt19937& gen);
 
@@ -37,7 +44,8 @@ public:
 
 	Spell* GenerateSpell(std::mt19937& gen);
 private:
-	Room* rooms[MAP_HEIGHT][MAP_WIDTH];
 	Player* _player;
+	Room* rooms[MAP_HEIGHT][MAP_WIDTH];
+	bool _quit;
 };
 

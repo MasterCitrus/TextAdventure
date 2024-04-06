@@ -1,10 +1,10 @@
 #include "Constants.h"
 
-const String commands[8] = {
+const String commands[] = {
 		"move", "use", "look", "quit", "help", "find spell", "spells", "cast"
 };
 
-const String directions[4] = {
+const String directions[] = {
 	"north", "south", "east", "west"
 };
 
