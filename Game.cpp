@@ -198,14 +198,14 @@ void Game::Use(String item, Vec2 pos) {
 void Game::Help() {
 	system("cls");
 	std::cout << "\t\t[Valid Commands]\n\n"
-		<< "\t\tMove <direction>  | Moves towards direction.\n"
-		<< "\t\tLook              | Checks room for items.\n"
-		<< "\t\tUse <object name> | Uses named object.\n"
-		<< "\t\tSpells            | Displays list of known spells.\n"
-		<< "\t\tFind Spell        | Checks if spell is known. Asks for spell name.\n"
-		<< "\t\tCast              | Casts a spell. Asks for spell name.\n"
-		<< "\t\tHelp              | Displays commands.\n"
-		<< "\t\tQuit              | Quits game.\n";
+		<< "\t\tMove <direction>		| Moves towards direction.\n"
+		<< "\t\tLook					| Checks room for items.\n"
+		<< "\t\tUse <object name>		| Uses named object.\n"
+		<< "\t\tSpells					| Displays list of known spells.\n"
+		<< "\t\tFind Spell <spell name>	| Checks if spell is known.\n"
+		<< "\t\tCast <spell name>		| Casts specified spell.\n"
+		<< "\t\tHelp					| Displays commands.\n"
+		<< "\t\tQuit					| Quits game.\n";
 }
 
 void Game::FindSpell(String spell) {
