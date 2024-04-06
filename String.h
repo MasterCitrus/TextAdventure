@@ -31,6 +31,8 @@ public:
 
 	String& Wobble();
 
+	String GetPartialString(String splitter, size_t index = 0);
+
 	//Overloads
 	bool operator==(const String& other) const;
 	bool operator!=(const String& other) const;

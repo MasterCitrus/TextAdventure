@@ -15,6 +15,11 @@ String Spell::GetName()
 	return _name;
 }
 
+int Spell::GetDamage()
+{
+	return _damage;
+}
+
 bool Spell::Compare(Spell* a, Spell* b) {
 	return a->GetName() < b->GetName();
 }

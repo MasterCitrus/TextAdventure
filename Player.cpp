@@ -15,12 +15,12 @@ bool Player::FindSpell(String& spell) {
 	int target;
 	String temp;
 	while (lower <= upper) {
-		target = lower + (upper - lower) / 2;
+		target = (upper + lower) / 2;
 		temp = spellList[target]->GetName();
 		temp.ToLower();
 		if (temp == spell) return true;
-		else if (temp < spell) lower = target + 1;
-		else upper = target;
+		if (temp < spell) lower = target + 1;
+		if (temp > spell) upper = target - 1;
 	}
 	return false;
 }
@@ -32,12 +32,12 @@ Spell* Player::CastSpell(String& spell)
 	int target;
 	String temp;
 	while (lower <= upper) {
-		target = lower + (upper - lower) / 2;
+		target = (upper + lower) / 2;
 		temp = spellList[target]->GetName();
 		temp.ToLower();
 		if (temp == spell) return spellList[target];
-		else if (temp < spell) lower = target + 1;
-		else upper = target;
+		if (temp < spell) lower = target + 1;
+		if (temp > spell) upper = target - 1;
 	}
 	return nullptr;
 }
@@ -48,11 +48,20 @@ std::vector<Spell*> Player::GetSpellList() {
 
 void Player::SpellList(){
 	for (int i = 0; i < spellList.size(); i++) {
-		std::cout << "\t\t" << spellList[i]->GetName() << "\n";
+		std::cout << "\t\t" << spellList[i]->GetName() << " | " << spellList[i]->GetDamage() << " damage" << "\n";
 	}
 }
 
 void Player::AddSpell(Spell* spell) {
 	spellList.push_back(spell);
 	if (spellList.size() >= 2) std::sort(spellList.begin(), spellList.end(), Spell::Compare);
+}
+
+void Player::SetPos(Vec2 pos) {
+	playerPos.x = pos.x;
+	playerPos.y = pos.y;
+}
+
+Vec2 Player::GetPos() const {
+	return playerPos;
 }

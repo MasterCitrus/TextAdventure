@@ -10,7 +10,7 @@ void Room::Description() const {
 	std::cout << "\t\t" << _description << std::endl;
 }
 
-String Room::GetName() const {
+String Room::GetName() {
 	return _name;
 }
 

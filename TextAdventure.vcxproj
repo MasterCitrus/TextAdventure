@@ -140,10 +140,12 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="Spell.h" />
     <ClInclude Include="String.h" />
+    <ClInclude Include="Vec2.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animal.cpp" />
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="Consumable.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Item.cpp" />
